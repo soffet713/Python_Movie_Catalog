@@ -1,12 +1,12 @@
 from openpyxl import load_workbook
 from openpyxl.worksheet.table import Table, TableStyleInfo
-from openpyxl.utils import get_column_letter
 from Movie_Catalog import str_to_int_or_float, adjust_columns
 from datetime import date
 
 today = date.today().strftime("%Y%m%d")
+file_name = today + '_Movie_Catalog.xlsx'
 # set file path
-file_path = 'C:\\Users\\SeanMac\\PycharmProjects\\Python_Test01\\20200409_Movie_Catalog.xlsx'
+file_path = 'C:\\Users\\SeanMac\\PycharmProjects\\Python_Test01\\' + file_name
 wb = load_workbook(file_path)
 wb.create_sheet('Blu-Ray Box Sets')
 
@@ -42,20 +42,20 @@ box_sets = [{'title': 'The Dark Knight Trilogy', 'director': 'Christopher Nolan'
             ]
 
 
-def add_box_sets(set_list):
-    for boxset in set_list:
-        ws.append(list(map(str_to_int_or_float, boxset.values())))
+def add_to_movies(set_list, table_name, table_style):
+    for item in set_list:
+        ws.append(list(map(str_to_int_or_float, item.values())))
 
     last_cell = ws.cell(row=ws.max_row, column=ws.max_column).coordinate
-    box_set_table = Table(displayName='BoxSetTable', ref='A1:{}'.format(last_cell))
-    style = TableStyleInfo(name='TableStyleMedium5', showRowStripes=True)
-    box_set_table.tableStyleInfo = style
-    ws.add_table(box_set_table)
+    new_table = Table(displayName=table_name, ref='A1:{}'.format(last_cell))
+    style = TableStyleInfo(name=table_style, showRowStripes=True)
+    new_table.tableStyleInfo = style
+    ws.add_table(new_table)
     adjust_columns(ws)
     wb.save(today + '_Movie_Catalog.xlsx')
 
 
-add_box_sets(box_sets)
+add_to_movies(box_sets, 'BoxSetTable', 'TableStyleMedium5')
 
 wb.create_sheet('DVDs & Box Sets')
 wb.active = wb['DVDs & Box Sets']
@@ -185,17 +185,4 @@ dvds = [{'title': 'Akira', 'director': 'Katsuhiro Ôtomo', 'genre': 'Animation, 
         ]
 
 
-def add_dvds(dvd_list):
-    for dvd in dvd_list:
-        ws.append(list(map(str_to_int_or_float, dvd.values())))
-
-    last_cell = ws.cell(row=ws.max_row, column=ws.max_column).coordinate
-    dvd_set_table = Table(displayName='DVDSetTable', ref='A1:{}'.format(last_cell))
-    style = TableStyleInfo(name='TableStyleMedium7', showRowStripes=True)
-    dvd_set_table.tableStyleInfo = style
-    ws.add_table(dvd_set_table)
-    adjust_columns(ws)
-    wb.save(today + '_Movie_Catalog.xlsx')
-
-
-add_dvds(dvds)
+add_to_movies(dvds, 'DVDSetTable', 'TableStyleMedium7')
